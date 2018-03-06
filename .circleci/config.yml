@@ -7,12 +7,6 @@ jobs:
     - image: circleci/golang:1.10
     working_directory: /go/src/github.com/prometheus/node_exporter
 
-    environment:
-      DOCKER_IMAGE_NAME: prom/node-exporter
-      QUAY_IMAGE_NAME: quay.io/prometheus/node-exporter
-      DOCKER_TEST_IMAGE_NAME: quay.io/prometheus/golang-builder:1.10-base
-      REPO_PATH: github.com/prometheus/node_exporter
-
     steps:
     - checkout
     - run: make promu
@@ -23,6 +17,12 @@ jobs:
     machine: true
     working_directory: /home/circleci/.go_workspace/src/github.com/prometheus/node_exporter
 
+    environment:
+      DOCKER_IMAGE_NAME: prom/node-exporter
+      QUAY_IMAGE_NAME: quay.io/prometheus/node-exporter
+      DOCKER_TEST_IMAGE_NAME: quay.io/prometheus/golang-builder:1.10-base
+      REPO_PATH: github.com/prometheus/node_exporter
+
     steps:
     - checkout
     - attach_workspace:
@@ -32,9 +32,6 @@ jobs:
     - run: ln -s .build/linux-amd64/node_exporter node_exporter
     - run:
         command: |
-          echo "CIRCLE_TAG=$CIRCLE_TAG"
-          echo "DOCKER_IMAGE_NAME=$DOCKER_IMAGE_NAME"
-          echo "QUAY_IMAGE_NAME=$QUAY_IMAGE_NAME"
           if [ -n "$CIRCLE_TAG" ]; then
             make docker DOCKER_IMAGE_NAME=$DOCKER_IMAGE_NAME DOCKER_IMAGE_TAG=$CIRCLE_TAG
             make docker DOCKER_IMAGE_NAME=$QUAY_IMAGE_NAME DOCKER_IMAGE_TAG=$CIRCLE_TAG
