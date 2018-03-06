@@ -20,13 +20,14 @@ jobs:
     - run: rm -v node_exporter
 
   build:
-    docker:
-    - image: circleci/golang:1.10
-    working_directory: /go/src/github.com/prometheus/node_exporter
+    machine: true
+    working_directory: /home/circleci/.go_workspace/src/github.com/prometheus/node_exporter
 
     steps:
     - checkout
-    - setup_remote_docker
+    - attach_workspace:
+        at: .
+    - run: make promu
     - run: promu crossbuild -v
     - run: ln -s .build/linux-amd64/node_exporter node_exporter
     - run:
