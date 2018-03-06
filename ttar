@@ -68,6 +68,9 @@ PEF
 function test_environment {
     if [[ "$(echo "a" | sed 's/a/\x0/' | wc -c)" -ne 2 ]]; then
         echo "WARNING sed unable to handle null bytes, using Python (slow)."
+        if ! command -v perl; then
+            echo "WARNING perl not installed."
+        fi
         if ! which python >/dev/null; then
             echo "ERROR Python not found. Aborting."
             exit 2
